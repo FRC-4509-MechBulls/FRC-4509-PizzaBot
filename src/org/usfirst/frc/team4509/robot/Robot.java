@@ -1,24 +1,21 @@
 package org.usfirst.frc.team4509.robot;
 
-import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.IterativeRobot;
-
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotDrive;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 
 /*
- * Edited By Kyle Brott on 10/25/17 
- * Cleaned up, mostly just little things. Most likely broke something
- * TODO: JavaDocs
+ * Edited By Kyle Brott on 2017-10-26 
+ * JavaDocs
  * Currently on GitHub @ https://github.com/FRC-4509-MechBulls/PizzaBot
  */
 
@@ -35,7 +32,7 @@ public class Robot extends IterativeRobot {
 	/*
 	 * CHANGE THIS VALUE TO MATCH WHERE THE ROBOT STARTS| |
 	 * Change the value behind the dot,      right here V V
-	 * tag:CHANGE_ON_START
+	 * tag:CHANGE_PRE_DEPLOY
 	 */
 	EDriveType CurrentDriveType = EDriveType.StartingRight;
 	
@@ -43,25 +40,23 @@ public class Robot extends IterativeRobot {
 	Joystick lStick = new Joystick(0); // Left joystick (May not always be the one on the physical left)
 	Joystick rStick = new Joystick(1); // Right joystick (May not always be the one on the physical right)
 	Timer timer = new Timer();
-	CANTalon talonDriveFrontRight = new CANTalon(0); // The front right driving Talon
+	CANTalon talonDriveBackLeft   = new CANTalon(5); // The back left driving Talon 
 	CANTalon talonDriveBackRight  = new CANTalon(3); // The back right driving Talon
 	CANTalon talonDriveFrontLeft  = new CANTalon(8); // The front left driving Talon
-	CANTalon talonDriveBackLeft   = new CANTalon(5); // The back left driving Talon 
-	CANTalon talonRopeClimbRight  = new CANTalon(1); // The right rope climber Talon
+	CANTalon talonDriveFrontRight = new CANTalon(0); // The front right driving Talon
 	CANTalon talonRopeClimbLeft   = new CANTalon(7);  // The left rope climber Talon
+	CANTalon talonRopeClimbRight  = new CANTalon(1); // The right rope climber Talon
 	XboxController xControl = new XboxController(0);
 	ADXRS450_Gyro gyro = new ADXRS450_Gyro();
 	Solenoid solenoid = new Solenoid(4); // The solenoid used to control the pneumatics system
 	Compressor compressor = new Compressor(1); // The compressor used to compress air for the pneumatics system
 	
-	final double NORMAL_SPEED = 3;
-	
 	double angle = gyro.getAngle(); // The angle that the robot starts at. Used for straight driving.
-	double leftSpeed = NORMAL_SPEED; // The current speed that the left side of the robot should be driving at. Used for straight driving.
-	double rightSpeed = -NORMAL_SPEED; // The current speed that the right side of the robot should be driving at. Negative for forward, positive for backward. Used for straight driving
+	double leftSpeed = 3; // The current speed that the left side of the robot should be driving at. Used for straight driving.
+	double rightSpeed = -3; // The current speed that the right side of the robot should be driving at. Negative for forward, positive for backward. Used for straight driving
 	boolean isChanged = true; // A boolean that is used in the driving straight method.	
 
-	final double INCHES_ROBOT_TRAVELLED = 23; // Change this value with the amount of inches that the robot traveled during the FPSTest tag:CHANGE_ON_START
+	final double INCHES_ROBOT_TRAVELLED = 23; // Change this value with the amount of inches that the robot traveled during the FPSTest tag:CHANGE_PRE_DEPLOY
 	final double FEET_PER_SECOND = (INCHES_ROBOT_TRAVELLED / 12) / 2; // The speed in feet per second that the robot can move
 	
 	double baseSpeed = 4;
@@ -107,11 +102,11 @@ public class Robot extends IterativeRobot {
 	 * This function is called periodically during autonomous
 	 */
 	@Override
-	public void autonomousPeriodic() {
-		
-	}
+	public void autonomousPeriodic() {  }
 	
-	// Called to test FPS
+	/**
+	 * Tests feet per second
+	 */
 	void fpsTester() {
 		while(timer.hasPeriodPassed(timer.get() + 2)) {
 			talonDriveBackLeft.set(3);
@@ -119,15 +114,17 @@ public class Robot extends IterativeRobot {
 			talonDriveFrontLeft.set(3);
 			talonDriveFrontRight.set(-3);
 		}
-		while(timer.hasPeriodPassed(timer.get() + .1f))
-		talonDriveBackLeft.set(-1);
-		talonDriveBackRight.set(1);
-		talonDriveFrontLeft.set(-1);
-		talonDriveFrontRight.set(1);
-		
+		while(timer.hasPeriodPassed(timer.get() + .1f)) {
+			talonDriveBackLeft.set(-1);
+			talonDriveBackRight.set(1);
+			talonDriveFrontLeft.set(-1);
+			talonDriveFrontRight.set(1);
+		}
 	}
-	
-	// Called when the robot starts on the left
+
+	/**
+	 * Autonomously go around the airship from the left starting position
+	 */
 	void autonomousStartingLeftSide() {
 		driveForFeet(7.77083);
 		turnForDegrees(45);
@@ -136,8 +133,10 @@ public class Robot extends IterativeRobot {
 		turnForDegrees(-45);
 		driveForFeet(10);
 	}
-	
-	// Called when the robot starts on the right
+
+	/**
+	 * Autonomously go around the airship from the right starting position
+	 */
 	void autonomousStartingRightSide() {
 		driveForFeet(7.77083);
 		turnForDegrees(-45);
@@ -146,8 +145,13 @@ public class Robot extends IterativeRobot {
 		turnForDegrees(45);
 		driveForFeet(10);
 	}
-	
-	// Called when the robot starts in the middle. Pass in true to go right around the airship, and false for the left side.
+
+	/**
+	 * Autonomously go around the airship from the middle starting position
+	 *
+	 * @param turnRight positive to go around on the right side, negative for
+	 *                  the left side
+	 */
 	void autonomousStartingMiddle(boolean turnRight) {
 		driveForFeet(7.77083);
 		driveForFeet(-4);
@@ -197,7 +201,7 @@ public class Robot extends IterativeRobot {
 			}
 			
 			// DRIVE JOYSTICK
-			// negative and positive BaseSpd keeps the Drivetrain going the same direction since one has to be inverse
+			// negative and positive baseSpeed keeps the Drivetrain going the same direction since one has to be inverse
 			talonDriveBackLeft.set(lStick.getY() * -baseSpeed);
 			talonDriveFrontLeft.set(lStick.getY() * -baseSpeed);
 			talonDriveFrontRight.set(rStick.getY() * baseSpeed);
@@ -234,10 +238,13 @@ public class Robot extends IterativeRobot {
 	}
 	
 	
-	/*
-	* This method takes a double parameter, which represents the amount of feet you want the bot to move. It moves the bot the specified amount of feet.
-	* Pass in a negative value to go backwards, and positive to go forward. Has a 1 degree margin of error allowed for straight driving.
-	*/
+	/**
+	 * Drive for given distance in feet
+	 * Has a 1 degree margin of error for driving straight
+	 *
+	 * @param feet the amount of feet to drive for. a positive value will make it
+	 *             go forwards, while a negative will make it go backwards.
+	 */
 	void driveForFeet(double feet) {
 		angle = gyro.getAngle(); // Set angle to the current angle so that no matter what the original angle was, the robot will drive straight according to the current angle
 		double time = timer.get(); // Set time to the current time
@@ -274,8 +281,8 @@ public class Robot extends IterativeRobot {
 	
 				}
 				// Set the speeds back to normal. Called when the robot's angle is within the margin of error
-				leftSpeed = NORMAL_SPEED;
-				rightSpeed = -NORMAL_SPEED;
+				leftSpeed = 3;
+				rightSpeed = -3;
 				isChanged = true;
 				talonDriveBackLeft.set(leftSpeed);
 				talonDriveFrontLeft.set(leftSpeed);
@@ -325,8 +332,8 @@ public class Robot extends IterativeRobot {
 				}
 				
 				// Set the speeds back to normal. Called when the robot's angle is within the margin of error
-				leftSpeed = -NORMAL_SPEED;
-				rightSpeed = NORMAL_SPEED;
+				leftSpeed = -3;
+				rightSpeed = 3;
 				isChanged = true;
 				talonDriveBackLeft.set(leftSpeed);
 				talonDriveFrontLeft.set(leftSpeed);
@@ -352,10 +359,11 @@ public class Robot extends IterativeRobot {
 		talonDriveFrontRight.set(0);
 	}
 	
-	/*
-	 * This method will make the robot turn x amount of degrees. The parameter can accept negative numbers.
-	 * Positive numbers make the robot turn to the right, and negative numbers make it turn to the left.
-	 * Has a 1 degree margin of error
+	/**
+	 * Rotate the robot given degrees, with a 1° margin of error
+	 *
+	 * @param degreesToTurn the amount of degrees to turn, with positive being
+	 *                      right and negative being left.
 	 */
 	void turnForDegrees(double degreesToTurn) {
 		double startingAngle = gyro.getAngle(); // The angle that the robot starts at
@@ -381,7 +389,12 @@ public class Robot extends IterativeRobot {
 		talonDriveFrontRight.set(0);
 	}
 	
-	// Returns the amount of seconds needed in order to travel the distance that's passed in
+	/**
+	 * Get the amount of time the robot will take to travel the given distance
+	 *
+	 * @param distance the amount of distance that the robot will travel
+	 * @return the amount of time the robot will take
+	 */
 	double getSeconds(double distance) {
 		return Math.abs(distance / FEET_PER_SECOND);
 	}
