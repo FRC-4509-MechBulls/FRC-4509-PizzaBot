@@ -168,7 +168,6 @@ public class Robot extends IterativeRobot {
 			turnForDegrees(45);
 			driveForFeet(10);
 		}
-		
 	}
 	
 	/**
@@ -211,17 +210,14 @@ public class Robot extends IterativeRobot {
 				talonRopeClimbLeft.set(0);
 				talonRopeClimbRight.set(0);
 			}
-			
-			
+
 			// Gear Controls
 			if(lStick.getRawButton(1))
 				solenoid.set(true); // sets the solenoid to push open the gate to collect the gear
 			else
 				solenoid.set(false); // closes the gate for gear after collecting gear
-			
 		}
 		SmartDashboard.putString("DB/String 0", "TeleOperator is Not Enabled");
-
 	}
 
 	/**
@@ -231,7 +227,6 @@ public class Robot extends IterativeRobot {
 	public void testPeriodic() {
 		LiveWindow.run();
 	}
-	
 	
 	/**
 	 * Drive for given distance in feet
@@ -247,7 +242,7 @@ public class Robot extends IterativeRobot {
 			leftSpeed = 3; // Start driving forward
 			rightSpeed = 3; 
 			while(!timer.hasPeriodPassed(time + getSeconds(feet))) { // If the amount of time needed to travel the number of feet needed hasn't passed
-				while(gyro.getAngle() - angle < -.5d) { // If the angle is too much to the left (.5 degree margin of error allowed)
+				while(gyro.getAngle() - angle < -0.5) { // If the angle is too much to the left (.5 degree margin of error allowed)
 					if(isChanged) { // Check isChanged. This makes sure that the drive values don't change too drastically.
 						leftSpeed++;
 						rightSpeed++;
@@ -257,7 +252,7 @@ public class Robot extends IterativeRobot {
 					// Set the talons' speed based on the corrective values
 					setDriveTalons();
 				}
-				while(gyro.getAngle() - angle > .5d) { // If the angle is too far to the right (.5 degree margin of error allowed)
+				while(gyro.getAngle() - angle > 0.5) { // If the angle is too far to the right (.5 degree margin of error allowed)
 					// Slow down right side and speed up left
 					if(isChanged) { // Check isChanged. This makes sure that the drive values don't change too drastically.
 						leftSpeed--;
@@ -267,7 +262,6 @@ public class Robot extends IterativeRobot {
 					
 					// Set the talons' speed based on the corrective values
 					setDriveTalons();
-	
 				}
 				// Set the speeds back to normal. Called when the robot's angle is within the margin of error
 				isChanged = true;
@@ -277,17 +271,16 @@ public class Robot extends IterativeRobot {
 			
 			// supply a quick burst of backward motion to stop faster.
 			time = timer.get();
-			while(!timer.hasPeriodPassed(time + .2d)) {
+			while(!timer.hasPeriodPassed(time + 0.2)) {
 				setDriveTalons(-2, 2);
 			}
-		}
-		else if(feet < 0) { // If feet is negative
+		} else if(feet < 0) { // If feet is negative
 			leftSpeed = -3; // start driving backward
 			rightSpeed = -3;
 			while(!timer.hasPeriodPassed(time + getSeconds(feet))) { // If the amount of time needed to travel the number of feet needed hasn't passed
 
 				// If the angle is too much to the left (.5 degree margin of error allowed)
-				while(gyro.getAngle() - angle < -.5d) {
+				while(gyro.getAngle() - angle < -0.5) {
 					if(isChanged) { // Check isChanged. This makes sure that the drive values don't change too drastically.
 						leftSpeed++;
 						rightSpeed++;
@@ -297,7 +290,7 @@ public class Robot extends IterativeRobot {
 				}
 
 				// If the angle is too much to the right (.5 degree margin of error allowed)
-				while(gyro.getAngle() - angle > .5d) {
+				while(gyro.getAngle() - angle > 0.5) {
 					if(isChanged) { // Check isChanged. This makes sure that the drive values don't change too drastically.
 						leftSpeed--;
 						rightSpeed--;
@@ -314,7 +307,7 @@ public class Robot extends IterativeRobot {
 			
 			// Supply quick burst of forward motion to make the robot stop faster.
 			time = timer.get();
-			while(!timer.hasPeriodPassed(time + .2d)) {
+			while(!timer.hasPeriodPassed(time + 0.2)) {
 				setDriveTalons(3, -3);
 			}
 		}
@@ -335,6 +328,9 @@ public class Robot extends IterativeRobot {
 
 	/**
 	 * Sets the drive talons' speed and the universal speeds to the given
+	 *
+	 * @param left  the speed to set the left talons
+	 * @param right the speed to set the right talons
 	 */
 	void setDriveTalons(double left, double right) {
 		leftSpeed = left;
@@ -354,11 +350,11 @@ public class Robot extends IterativeRobot {
 	void turnForDegrees(double degreesToTurn) {
 		double startingAngle = gyro.getAngle(); // The angle that the robot starts at
 		double targetAngle = gyro.getAngle() + degreesToTurn; // The angle the robot wants to end at
-		while(startingAngle + degreesToTurn - .5d > gyro.getAngle() || startingAngle + degreesToTurn + .5d < gyro.getAngle()) { // if the angle isn't the correct angle
-			if(gyro.getAngle() - targetAngle > .5f) // If the current angle is too far right
-				setDriveTalons(-3.5d, -3.5d);
-			else if(gyro.getAngle() - targetAngle < -.5f) // If the current angle is too far left
-				setDriveTalons(3.5d, 3.5d);
+		while(startingAngle + degreesToTurn - 0.5 > gyro.getAngle() || startingAngle + degreesToTurn + 0.5 < gyro.getAngle()) { // if the angle isn't the correct angle
+			if(gyro.getAngle() - targetAngle > 0.5) // If the current angle is too far right
+				setDriveTalons(-3.5, -3.5);
+			else if(gyro.getAngle() - targetAngle < -0.5) // If the current angle is too far left
+				setDriveTalons(3.5, 3.5);
 		}
 		
 		// Stop the robot
