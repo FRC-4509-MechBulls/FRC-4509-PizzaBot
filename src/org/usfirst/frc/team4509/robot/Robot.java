@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.XboxController;
 
 public class Robot extends IterativeRobot {
 
-	enum EDriveType {
+	public enum EDriveType {
 		StartingRight,
 		StartingLeft,
 		StartingMiddleRight,
@@ -124,7 +124,7 @@ public class Robot extends IterativeRobot {
 	/**
 	 * Autonomously go around the airship from the left starting position
 	 */
-	void autonomousStartingLeftSide() {
+	public void autonomousStartingLeftSide() {
 		driveForFeet(7.77083);
 		turnForDegrees(45);
 		driveForFeet(5);
@@ -136,7 +136,7 @@ public class Robot extends IterativeRobot {
 	/**
 	 * Autonomously go around the airship from the right starting position
 	 */
-	void autonomousStartingRightSide() {
+	public void autonomousStartingRightSide() {
 		driveForFeet(7.77083);
 		turnForDegrees(-45);
 		driveForFeet(5);
@@ -151,7 +151,7 @@ public class Robot extends IterativeRobot {
 	 * @param turnRight positive to go around on the right side, negative for
 	 *                  the left side
 	 */
-	void autonomousStartingMiddle(boolean turnRight) {
+	public void autonomousStartingMiddle(boolean turnRight) {
 		driveForFeet(7.77083);
 		driveForFeet(-4);
 		if(turnRight) {
@@ -159,8 +159,7 @@ public class Robot extends IterativeRobot {
 			driveForFeet(6);
 			turnForDegrees(-45);
 			driveForFeet(10);
-		}
-		else {
+		} else {
 			turnForDegrees(-90);
 			driveForFeet(6);
 			turnForDegrees(45);
@@ -233,7 +232,7 @@ public class Robot extends IterativeRobot {
 	 * @param feet the amount of feet to drive for. a positive value will make it
 	 *             go forwards, while a negative will make it go backwards.
 	 */
-	void driveForFeet(double feet) {
+	public void driveForFeet(double feet) {
 		angle = gyro.getAngle(); // Set angle to the current angle so that no matter what the original angle was, the robot will drive straight according to the current angle
 		double time = timer.get(); // Set time to the current time
 		if(feet > 0) { // If feet is positive
@@ -279,8 +278,8 @@ public class Robot extends IterativeRobot {
 	/**
 	 * Turn the robot to match the universal angle, with a 1° margin of error.
 	 */
-	void correctAngle() {
-		while(gyro.getAngle() - angle < -0.5 && gyro.getAngle() - angle > 0.5) { // make sure it didn't over-correct
+	public void correctAngle() {
+		while(!(gyro.getAngle() - angle > -0.5 && gyro.getAngle() - angle < 0.5)) { // make sure it's still correct
 			while(gyro.getAngle() - angle < -0.5) { // If the angle is too much to the left (.5° margin of error allowed)
 				if(isChanged) { // Check isChanged. This makes sure that the drive values don't change too drastically.
 					// Slow down left side and speed up right
@@ -306,7 +305,7 @@ public class Robot extends IterativeRobot {
 	/**
 	 * Sets the drive talons' speed to the universal speeds
 	 */
-	void setDriveTalons() {
+	public void setDriveTalons() {
 		talonDriveBackLeft.set(leftSpeed);
 		talonDriveFrontLeft.set(leftSpeed);
 		talonDriveBackRight.set(rightSpeed);
@@ -319,7 +318,7 @@ public class Robot extends IterativeRobot {
 	 * @param left  the speed to set the left talons
 	 * @param right the speed to set the right talons
 	 */
-	void setDriveTalons(double left, double right) {
+	public void setDriveTalons(double left, double right) {
 		leftSpeed = left;
 		rightSpeed = right;
 		talonDriveBackLeft.set(left);
@@ -334,7 +333,7 @@ public class Robot extends IterativeRobot {
 	 * @param degreesToTurn the amount of degrees to turn, with positive being
 	 *                      right and negative being left.
 	 */
-	void turnForDegrees(double degreesToTurn) {
+	public void turnForDegrees(double degreesToTurn) {
 		double startingAngle = gyro.getAngle(); // The angle that the robot starts at
 		double targetAngle = gyro.getAngle() + degreesToTurn; // The angle the robot wants to end at
 		while(startingAngle + degreesToTurn - 0.5 > gyro.getAngle() || startingAngle + degreesToTurn + 0.5 < gyro.getAngle()) { // if the angle isn't the correct angle
@@ -354,7 +353,7 @@ public class Robot extends IterativeRobot {
 	 * @param distance the amount of distance that the robot will travel
 	 * @return the amount of time the robot will take
 	 */
-	double getSeconds(double distance) {
+	public double getSeconds(double distance) {
 		return Math.abs(distance / FEET_PER_SECOND);
 	}
 
