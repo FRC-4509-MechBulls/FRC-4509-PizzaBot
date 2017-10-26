@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.XboxController;
 
 /*
  * Edited By Kyle Brott on 2017-10-26 
- * JavaDocs
+ * JavaDocs @ https://frc-4509-mechbulls.github.io/PizzaBot/
  * Currently on GitHub @ https://github.com/FRC-4509-MechBulls/PizzaBot
  */
 
@@ -34,7 +34,7 @@ public class Robot extends IterativeRobot {
 	 * Change the value behind the dot,      right here V V
 	 * tag:CHANGE_PRE_DEPLOY
 	 */
-	EDriveType CurrentDriveType = EDriveType.StartingRight;
+	EDriveType currentDriveType = EDriveType.StartingRight;
 	
 	RobotDrive myRobot = new RobotDrive(0, 1);
 	Joystick lStick = new Joystick(0); // Left joystick (May not always be the one on the physical left)
@@ -86,16 +86,23 @@ public class Robot extends IterativeRobot {
 		gyro.calibrate(); // resets gyro position and sets new position as pos. 0
 		angle = gyro.getAngle();
 		
-		if(CurrentDriveType == EDriveType.StartingRight)
-			autonomousStartingRightSide();
-		else if(CurrentDriveType == EDriveType.StartingLeft)
-			autonomousStartingLeftSide();
-		else if(CurrentDriveType == EDriveType.StartingMiddleRight)
-			autonomousStartingMiddle(true);
-		else if(CurrentDriveType == EDriveType.StartingMiddleLeft)
-			autonomousStartingMiddle(false);
-		else if(CurrentDriveType == EDriveType.FPSTest)
-			fpsTester();
+		switch(currentDriveType) {
+			case EDriveType.StartingRight:
+				autonomousStartingRightSide();
+				break;
+			case EDriveType.StartingLeft:
+				autonomousStartingLeftSide();
+				break;
+			case EDriveType.StartingMiddleRight:
+				autonomousStartingMiddle(true);
+				break;
+			case EDriveType.StartingMiddleLeft:
+				autonomousStartingMiddle(false);
+				break;
+			case EDriveType.FPSTest:
+				fpsTester();
+				break;
+		}
 	}
 	
 	/**
