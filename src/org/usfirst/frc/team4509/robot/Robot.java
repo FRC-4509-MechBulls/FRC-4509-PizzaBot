@@ -14,8 +14,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 
 /*
- * Edited by Kyle Brott on 2017-10-26 
- * void correctAngle()
+ * Edited by Kyle Brott on 2017-10-26
  * Currently on GitHub @ https://github.com/FRC-4509-MechBulls/PizzaBot
  */
 
@@ -106,13 +105,13 @@ public class Robot extends IterativeRobot {
 	}
 	
 	/**
-	 * This function is called periodically during autonomous
+	 * This function is called periodically during autonomous mode
 	 */
 	@Override
 	public void autonomousPeriodic() {  }
 	
 	/**
-	 * Tests feet per second
+	 * Test feet per second
 	 */
 	public void fpsTester() {
 		while(timer.hasPeriodPassed(timer.get() + 2))
@@ -200,19 +199,13 @@ public class Robot extends IterativeRobot {
 			
 			// ROPECLIMB JOYSTICK
 			if(rStick.getRawButton(1)) { // raw button 1 is the trigger
-				talonRopeClimbLeft.set(-4);
-				talonRopeClimbRight.set(4);
+				setClimbTalons(-4, 4);
 				SmartDashboard.putString("DB/String 5","Trigger hit");
-			} else {
-				talonRopeClimbLeft.set(0);
-				talonRopeClimbRight.set(0);
-			}
+			} else
+				setClimbTalons(0, 0);
 
 			// Gear Controls
-			if(lStick.getRawButton(1))
-				solenoid.set(true); // sets the solenoid to push open the gate to collect the gear
-			else
-				solenoid.set(false); // closes the gate for gear after collecting gear
+			solenoid.set(lStick.getRawButton(1)); // opens/closes gate
 		}
 		SmartDashboard.putString("DB/String 0", "TeleOperator is Not Enabled");
 	}
@@ -249,9 +242,9 @@ public class Robot extends IterativeRobot {
 			
 			// supply a quick burst of backward motion to stop faster.
 			time = timer.get();
-			while(!timer.hasPeriodPassed(time + 0.2)) {
+			while(!timer.hasPeriodPassed(time + 0.2))
 				setDriveTalons(-2, 2);
-			}
+
 		} else if(feet < 0) { // If feet is negative
 			leftSpeed = -3; // start driving backward
 			rightSpeed = -3;
@@ -266,13 +259,12 @@ public class Robot extends IterativeRobot {
 			
 			// Supply quick burst of forward motion to make the robot stop faster.
 			time = timer.get();
-			while(!timer.hasPeriodPassed(time + 0.2)) {
+			while(!timer.hasPeriodPassed(time + 0.2))
 				setDriveTalons(3, -3);
-			}
+
 		}
-		
-		// Stop the robot
-		setDriveTalons(0, 0);
+
+		setDriveTalons(0, 0); // Stop the robot
 	}
 
 	/**
@@ -280,6 +272,7 @@ public class Robot extends IterativeRobot {
 	 */
 	public void correctAngle() {
 		while(!(gyro.getAngle() - angle > -0.5 && gyro.getAngle() - angle < 0.5)) { // make sure it's still correct
+
 			while(gyro.getAngle() - angle < -0.5) { // If the angle is too much to the left (.5° margin of error allowed)
 				if(isChanged) { // Check isChanged. This makes sure that the drive values don't change too drastically.
 					// Slow down left side and speed up right
@@ -299,6 +292,7 @@ public class Robot extends IterativeRobot {
 				}
 				setDriveTalons();
 			}
+
 		}
 	}
 
@@ -313,7 +307,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	/**
-	 * Sets the drive talons' speed and the universal speeds to the given
+	 * Sets the drive talons' speeds and the universal speeds to the given
 	 *
 	 * @param left  the speed to set the left talons
 	 * @param right the speed to set the right talons
@@ -325,6 +319,17 @@ public class Robot extends IterativeRobot {
 		talonDriveFrontLeft.set(left);
 		talonDriveBackRight.set(right);
 		talonDriveFrontRight.set(right);
+	}
+
+	/**
+	 * Sets the climb talons' speeds to the given
+	 *
+	 * @param left  the speed to set the left talon
+	 * @param right the speed to set the right talon
+	 */
+	public void setClimbTalons(double left, double right) {
+		talonRopeClimbLeft.set(left);
+		talonRopeClimbRight.set(right);
 	}
 	
 	/**
@@ -342,9 +347,8 @@ public class Robot extends IterativeRobot {
 			else if(gyro.getAngle() - targetAngle < -0.5) // If the current angle is too far left
 				setDriveTalons(3.5, 3.5);
 		}
-		
-		// Stop the robot
-		setDriveTalons(0, 0);
+
+		setDriveTalons(0, 0); // Stop the robot
 	}
 
 	/**
