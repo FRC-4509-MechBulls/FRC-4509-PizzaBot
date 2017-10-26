@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.XboxController;
 
 /*
  * Edited By Kyle Brott on 2017-10-26 
- * JavaDocs @ https://frc-4509-mechbulls.github.io/PizzaBot/
+ * setDriveTalons()
  * Currently on GitHub @ https://github.com/FRC-4509-MechBulls/PizzaBot
  */
 
@@ -116,16 +116,10 @@ public class Robot extends IterativeRobot {
 	 */
 	void fpsTester() {
 		while(timer.hasPeriodPassed(timer.get() + 2)) {
-			talonDriveBackLeft.set(3);
-			talonDriveBackRight.set(-3);
-			talonDriveFrontLeft.set(3);
-			talonDriveFrontRight.set(-3);
+			setDriveTalons(3, -3);
 		}
 		while(timer.hasPeriodPassed(timer.get() + .1f)) {
-			talonDriveBackLeft.set(-1);
-			talonDriveBackRight.set(1);
-			talonDriveFrontLeft.set(-1);
-			talonDriveFrontRight.set(1);
+			setDriveTalons(-1, 1);
 		}
 	}
 
@@ -197,22 +191,16 @@ public class Robot extends IterativeRobot {
 			// throttle wheel is located on right hand joystick
 			// The Throttle variant goes from
 			// 4 to 8 to 12
-			if (rStick.getThrottle() <= -0.25 && rStick.getThrottle() >= -1){// lowest 3rd of throttle wheel
+			if (rStick.getThrottle() <= -0.25 && rStick.getThrottle() >= -1) // lowest 3rd of throttle wheel
 				baseSpeed = 4;
-			}
-			if (rStick.getThrottle() <= 0.5 && rStick.getThrottle() > -0.25){// middle 3rd of the throttle wheel
+			if (rStick.getThrottle() <= 0.5 && rStick.getThrottle() > -0.25) // middle 3rd of the throttle wheel
 				baseSpeed = 8;
-			}
-			if (rStick.getThrottle() <= 1  && rStick.getThrottle() > 0.5){// top 3rd of throttle wheel
+			if (rStick.getThrottle() <= 1  && rStick.getThrottle() > 0.5) // top 3rd of throttle wheel
 				baseSpeed = 12;
-			}
 			
 			// DRIVE JOYSTICK
 			// negative and positive baseSpeed keeps the Drivetrain going the same direction since one has to be inverse
-			talonDriveBackLeft.set(lStick.getY() * -baseSpeed);
-			talonDriveFrontLeft.set(lStick.getY() * -baseSpeed);
-			talonDriveFrontRight.set(rStick.getY() * baseSpeed);
-			talonDriveBackRight.set(rStick.getY() * baseSpeed);
+			setDriveTalons(lStick.getY() * -baseSpeed, rStick.getY() * baseSpeed);
 			
 			// ROPECLIMB JOYSTICK
 			if (rStick.getRawButton(1)) { // raw button 1 is the trigger
@@ -261,50 +249,36 @@ public class Robot extends IterativeRobot {
 			while(!timer.hasPeriodPassed(time + getSeconds(feet))) { // If the amount of time needed to travel the number of feet needed hasn't passed
 				while(gyro.getAngle() - angle < -.5d) { // If the angle is too much to the left (.5 degree margin of error allowed)
 					if(isChanged) { // Check isChanged. This makes sure that the drive values don't change too drastically.
-						leftSpeed += 1;
-						rightSpeed += 1;
+						leftSpeed++;
+						rightSpeed++;
 						isChanged = false;
 					}
 					
 					// Set the talons' speed based on the corrective values
-					talonDriveBackLeft.set(leftSpeed);
-					talonDriveFrontLeft.set(leftSpeed);
-					talonDriveBackRight.set(rightSpeed);
-					talonDriveFrontRight.set(rightSpeed);
+					setDriveTalons();
 				}
 				while(gyro.getAngle() - angle > .5d) { // If the angle is too far to the right (.5 degree margin of error allowed)
 					// Slow down right side and speed up left
 					if(isChanged) { // Check isChanged. This makes sure that the drive values don't change too drastically.
-						leftSpeed -= 1;
-						rightSpeed-= 1;
+						leftSpeed--;
+						rightSpeed--;
 						isChanged = false;
 					}
 					
 					// Set the talons' speed based on the corrective values
-					talonDriveBackLeft.set(leftSpeed);
-					talonDriveFrontLeft.set(leftSpeed);
-					talonDriveBackRight.set(rightSpeed);
-					talonDriveFrontRight.set(rightSpeed);
+					setDriveTalons();
 	
 				}
 				// Set the speeds back to normal. Called when the robot's angle is within the margin of error
-				leftSpeed = 3;
-				rightSpeed = -3;
 				isChanged = true;
-				talonDriveBackLeft.set(leftSpeed);
-				talonDriveFrontLeft.set(leftSpeed);
-				talonDriveBackRight.set(rightSpeed);
-				talonDriveFrontRight.set(rightSpeed);
+				setDriveTalons(3, -3);
 				// SmartDashboard.putString("DB/String 5", "Going Straight");
 			}
 			
 			// supply a quick burst of backward motion to stop faster.
 			time = timer.get();
 			while(!timer.hasPeriodPassed(time + .2d)) {
-				talonDriveBackLeft.set(-2);
-				talonDriveFrontLeft.set(-2);
-				talonDriveFrontRight.set(2);
-				talonDriveBackRight.set(2);
+				setDriveTalons(-2, 2);
 			}
 		}
 		else if(feet < 0) { // If feet is negative
@@ -315,55 +289,60 @@ public class Robot extends IterativeRobot {
 				// If the angle is too much to the left (.5 degree margin of error allowed)
 				while(gyro.getAngle() - angle < -.5d) {
 					if(isChanged) { // Check isChanged. This makes sure that the drive values don't change too drastically.
-						leftSpeed += 1;
-						rightSpeed += 1;
+						leftSpeed++;
+						rightSpeed++;
 						isChanged = false;
 					}
-					talonDriveBackLeft.set(leftSpeed);
-					talonDriveFrontLeft.set(leftSpeed);
-					talonDriveBackRight.set(rightSpeed);
-					talonDriveFrontRight.set(rightSpeed);
+					setDriveTalons();
 				}
 
 				// If the angle is too much to the right (.5 degree margin of error allowed)
 				while(gyro.getAngle() - angle > .5d) {
 					if(isChanged) { // Check isChanged. This makes sure that the drive values don't change too drastically.
-						leftSpeed -= 1;
-						rightSpeed -= 1;
+						leftSpeed--;
+						rightSpeed--;
 						isChanged = false;
 					}
-					talonDriveBackLeft.set(leftSpeed);
-					talonDriveFrontLeft.set(leftSpeed);
-					talonDriveBackRight.set(rightSpeed);
-					talonDriveFrontRight.set(rightSpeed);
+					setDriveTalons();
 				}
 				
 				// Set the speeds back to normal. Called when the robot's angle is within the margin of error
-				leftSpeed = -3;
-				rightSpeed = 3;
 				isChanged = true;
-				talonDriveBackLeft.set(leftSpeed);
-				talonDriveFrontLeft.set(leftSpeed);
-				talonDriveBackRight.set(rightSpeed);
-				talonDriveFrontRight.set(rightSpeed);
+				setDriveTalons(-3, 3);
 				// SmartDashboard.putString("DB/String 5", "Going Straight");
 			}
 			
 			// Supply quick burst of forward motion to make the robot stop faster.
 			time = timer.get();
 			while(!timer.hasPeriodPassed(time + .2d)) {
-				talonDriveBackLeft.set(3);
-				talonDriveFrontLeft.set(3);
-				talonDriveFrontRight.set(-3);
-				talonDriveBackRight.set(-3);
+				setDriveTalons(3, -3);
 			}
 		}
 		
 		// Stop the robot
-		talonDriveBackLeft.set(0);
-		talonDriveFrontLeft.set(0);
-		talonDriveBackRight.set(0);
-		talonDriveFrontRight.set(0);
+		setDriveTalons(0, 0);
+	}
+
+	/**
+	 * Sets the drive talons' speed to the universal speeds
+	 */
+	void setDriveTalons() {
+		talonDriveBackLeft.set(leftSpeed);
+		talonDriveFrontLeft.set(leftSpeed);
+		talonDriveBackRight.set(rightSpeed);
+		talonDriveFrontRight.set(rightSpeed);
+	}
+
+	/**
+	 * Sets the drive talons' speed and the universal speeds to the given
+	 */
+	void setDriveTalons(double left, double right) {
+		leftSpeed = left;
+		rightSpeed = right;
+		talonDriveBackLeft.set(left);
+		talonDriveFrontLeft.set(left);
+		talonDriveBackRight.set(right);
+		talonDriveFrontRight.set(right);
 	}
 	
 	/**
@@ -376,24 +355,14 @@ public class Robot extends IterativeRobot {
 		double startingAngle = gyro.getAngle(); // The angle that the robot starts at
 		double targetAngle = gyro.getAngle() + degreesToTurn; // The angle the robot wants to end at
 		while(startingAngle + degreesToTurn - .5d > gyro.getAngle() || startingAngle + degreesToTurn + .5d < gyro.getAngle()) { // if the angle isn't the correct angle
-			if(gyro.getAngle() - targetAngle > .5f) { // If the current angle is too far right
-				talonDriveBackLeft.set(-3.5d);
-				talonDriveFrontLeft.set(-3.5d);
-				talonDriveBackRight.set(-3.5d);
-				talonDriveFrontRight.set(-3.5d);
-			} else if(gyro.getAngle() - targetAngle < -.5f) { // If the current angle is too far left
-				talonDriveBackLeft.set(3.5d);
-				talonDriveFrontLeft.set(3.5d);
-				talonDriveBackRight.set(3.5d);
-				talonDriveFrontRight.set(3.5d);
-			}
+			if(gyro.getAngle() - targetAngle > .5f) // If the current angle is too far right
+				setDriveTalons(-3.5d, -3.5d);
+			else if(gyro.getAngle() - targetAngle < -.5f) // If the current angle is too far left
+				setDriveTalons(3.5d, 3.5d);
 		}
 		
 		// Stop the robot
-		talonDriveBackLeft.set(0);
-		talonDriveFrontLeft.set(0);
-		talonDriveBackRight.set(0);
-		talonDriveFrontRight.set(0);
+		setDriveTalons(0, 0);
 	}
 	
 	/**
