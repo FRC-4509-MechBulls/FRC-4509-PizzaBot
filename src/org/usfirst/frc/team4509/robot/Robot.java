@@ -114,7 +114,7 @@ public class Robot extends IterativeRobot {
 	/**
 	 * Tests feet per second
 	 */
-	void fpsTester() {
+	public void fpsTester() {
 		while(timer.hasPeriodPassed(timer.get() + 2))
 			setDriveTalons(3, -3);
 		while(timer.hasPeriodPassed(timer.get() + 0.1))
