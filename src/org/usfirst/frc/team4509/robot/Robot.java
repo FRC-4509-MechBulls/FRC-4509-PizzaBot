@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.XboxController;
 
 public class Robot extends IterativeRobot {
 
-	public enum EDriveType {
+	enum EDriveType {
 		StartingRight,
 		StartingLeft,
 		StartingMiddleRight,
@@ -146,8 +146,8 @@ public class Robot extends IterativeRobot {
 	/**
 	 * Autonomously go around the airship from the middle starting position
 	 *
-	 * @param turnRight positive to go around on the right side, negative for
-	 *                  the left side
+	 * @param turnRight true to go around on the right side, false for the left
+	 *                  side
 	 */
 	public void autonomousStartingMiddle(boolean turnRight) {
 		driveForFeet(7.77083);
