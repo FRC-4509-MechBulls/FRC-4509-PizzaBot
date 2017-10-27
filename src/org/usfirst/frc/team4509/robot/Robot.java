@@ -3,7 +3,6 @@ package org.usfirst.frc.team4509.robot;
 import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -27,14 +26,14 @@ public class Robot extends IterativeRobot {
 		StartingMiddleLeft,
 		FPSTest
 	}
-	
+
 	/*
 	 * CHANGE THIS VALUE TO MATCH WHERE THE ROBOT STARTS| |
 	 * Change the value behind the dot,      right here V V
 	 * tag:CHANGE_PRE_DEPLOY
 	 */
-	EDriveType currentDriveType = EDriveType.StartingRight;
-	
+	Robot.EDriveType currentDriveType = EDriveType.StartingRight;
+		
 	RobotDrive myRobot = new RobotDrive(0, 1);
 	Joystick lStick = new Joystick(0); // Left joystick (May not always be the one on the physical left)
 	Joystick rStick = new Joystick(1); // Right joystick (May not always be the one on the physical right)
@@ -86,19 +85,19 @@ public class Robot extends IterativeRobot {
 		angle = gyro.getAngle();
 		
 		switch(currentDriveType) {
-			case EDriveType.StartingRight:
+			case StartingRight:
 				autonomousStartingRightSide();
 				break;
-			case EDriveType.StartingLeft:
+			case StartingLeft:
 				autonomousStartingLeftSide();
 				break;
-			case EDriveType.StartingMiddleRight:
+			case StartingMiddleRight:
 				autonomousStartingMiddle(true);
 				break;
-			case EDriveType.StartingMiddleLeft:
+			case StartingMiddleLeft:
 				autonomousStartingMiddle(false);
 				break;
-			case EDriveType.FPSTest:
+			case FPSTest:
 				fpsTester();
 				break;
 		}
@@ -205,7 +204,7 @@ public class Robot extends IterativeRobot {
 				setClimbTalons(0, 0);
 
 			// Gear Controls
-			solenoid.set(lStick.getRawButton(1)); // opens/closes gate
+			solenoid.set(lStick.getRawButton(1)); // opens or closes gate
 		}
 		SmartDashboard.putString("DB/String 0", "TeleOperator is Not Enabled");
 	}
